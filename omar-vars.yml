@@ -1,0 +1,225 @@
+project_name: O2 Web Services
+
+project_description: "
+These docs serve as a guide for installing and running an individual service. It is up to the organization's best practices on how to orchestrate and configure the applications at scale.
+"
+
+working_directory: repos/
+
+docs_locations:
+  - readme
+  - readme.md
+  - Dockerfile
+  - docker/Dockerfile
+  - Jenkinsfile
+  - docs/
+
+repos:
+  - git_url: https://github.com/ossimlabs/omar-admin-server
+    branch: dev
+    modules:
+      - name: omar-admin-server
+        path: omar-admin-server
+        description: Spring Boot Admin provides an interface to manage and monitor all Spring Boot applications. The applications register with Spring Boot are discovered using Spring Cloud (Eureka).
+
+  - git_url: https://github.com/ossimlabs/omar-avro-metadata
+    branch: dev
+    modules:
+      - name: omar-avro-metadata
+        path: omar-avro-metadata
+        description: The Avro Metadata app receives JSON image metadata and stores it in a NoSQL database. It also retrieves and serves that metadata upon HTTP request.
+
+  - git_url: https://github.com/ossimlabs/omar-base
+    branch: dev
+    modules:
+      - name: omar-base
+        path: omar-base
+        description: The OMAR base container is the docker image upon which all other O2 services are built.
+
+  - git_url: https://github.com/ossimlabs/omar-basemap
+    branch: dev
+    modules:
+      - name: omar-basemap
+        path: omar-basemap
+        description: The OMAR Basemap service provides Open Street Map tiles to the web application and the user.
+
+  - git_url: https://github.com/ossimlabs/omar-config-server
+    branch: dev
+    modules:
+      - name: omar-config-server
+        path: omar-config-server
+        description: The OMAR Spring Configuration Server is used to hand configuration files out to the various OMAR Spring micro services.
+
+  - git_url: https://github.com/ossimlabs/omar-download
+    branch: dev
+    modules:
+      - name: omar-download
+        path: omar-download
+        description: The OMAR Download service handles user download requests for imagery, bundling an image's raw file with all auxillary files into a zip file.
+
+  - git_url: https://github.com/ossimlabs/omar-eureka-server
+    branch: dev
+    modules:
+      - name: omar-eureka-server
+        path: omar-eureka-server
+        description: The OMAR Eureka server is an instantiation of the Spring Framework Netflix Discovery Client
+
+  - git_url: https://github.com/ossimlabs/omar-geoscript
+    branch: dev
+    modules:
+      - name: omar-geoscript
+        path: omar-geoscript
+        description: The OMAR Geoscript application encapsulates all the geotools dependencies which provides libraries to query the OMAR database, draw footprints and manipulate shape files among other spatial capabilities
+
+  - git_url: https://github.com/ossimlabs/omar-mapproxy
+    branch: dev
+    modules:
+      - name: omar-mapproxy
+        path: omar-mapproxy
+        description: The OMAR MapProxy service acts as a proxy between basemaps and geospatial applications as well as a map tile cache
+
+  - git_url: https://github.com/ossimlabs/omar-mensa
+    branch: dev
+    modules:
+      - name: omar-mensa
+        path: omar-mensa
+        description: Tme OMAR Mensuration service receives and handles all user measurement (e.g. area, length, etc.) requests for a particular image
+
+  - git_url: https://github.com/ossimlabs/omar-nifi
+    branch: dev
+    modules:
+      - name: omar-nifi
+        path: omar-nifi
+
+  - git_url: https://github.com/ossimlabs/omar-oms
+    branch: dev
+    modules:
+      - name: omar-oms
+        path: omar-oms
+        description: The OMAR OSSIM Mapping Service contains all of OSSIM's functionality, binding it via JNI to be web accessible
+
+  - git_url: https://github.com/ossimlabs/omar-ossim-base
+    branch: dev
+    modules:
+      - name: omar-ossim-base
+        path: omar-ossim-base
+        description: The OMAR OSSIM Base container is a docker image that containes all OSSIM libraries and is used to build any other service that may require them
+
+  - git_url: https://github.com/ossimlabs/omar-reachback
+    branch: dev
+    modules:
+      - name: omar-reachback
+        path: omar-reachback
+        description: OMAR-reachback allows for search and discovery of data in external repositories
+
+  - git_url: https://github.com/ossimlabs/omar-services-monitor
+    branch: dev
+    modules:
+      - name: omar-services-monitor
+        path: omar-services-monitor
+        description: OMAR-Services-Monitor is an application used to track the status of deployed OMAR services across different deployments
+
+  - git_url: https://github.com/ossimlabs/omar-sqs-stager
+    branch: dev
+    modules:
+      - name: omar-sqs-stager
+        path: omar-sqs-stager
+        description: The OMAR Simple Queue Service Stager provides the workflow to monitors, receive and process (i.e. ingest) SQS messages which notify the system of new images to be ingested
+
+  - git_url: https://github.com/ossimlabs/omar-stager
+    branch: dev
+    modules:
+      - name: omar-stager
+        path: omar-stager
+        description: The OMAR Stager service provides the workflow to process and ingest data into the O2 system, creating histograms and overviews as necessary
+
+  - git_url: https://github.com/ossimlabs/omar-superoverlay
+    branch: dev
+    modules:
+      - name: omar-superoverlay
+        path: omar-superoverlay
+        description: The OMAR Superoverlay service provides functionality for generating and servicing KMLs, which allows users to search and view imagery within O2 in external GeoINT tools
+
+  - git_url: https://github.com/ossimlabs/omar-twofishes
+    branch: dev
+    modules:
+      - name: omar-twofishes
+        path: omar-twofishes
+        description: The OMAR Twofishes service acts as a geocoder through converting g-oname strings into coordinates
+
+  - git_url: https://github.com/ossimlabs/omar-ui
+    branch: dev
+    modules:
+      - name: omar-ui
+        path: omar-ui
+        description: The OMAR UI services provides the user an entry point to conveniently interact with OMAR and its supported services
+
+  - git_url: https://github.com/ossimlabs/omar-upload
+    branch: dev
+    modules:
+      - name: omar-upload
+        path: omar-upload
+        description: The OMAR Upload service allows users to upload image files for stagin
+
+  - git_url: https://github.com/ossimlabs/omar-video-ui
+    branch: dev
+    modules:
+      - name: omar-video-ui
+        path: omar-video-ui
+        description: OMAR-video-ui is the UI that enables users to exploit video data
+
+  - git_url: https://github.com/ossimlabs/omar-volume-cleanup
+    branch: dev
+    modules:
+      - name: omar-volume-cleanup
+        path: omar-volume-cleanup
+        description: An application to monitor and manage a volume of O2 raster images. The application cleans old rasters when used disk space goes over a given threshold. Rasters are deleted using the omar-stager HTTP API
+
+  - git_url: https://github.com/ossimlabs/omar-wcs
+    branch: dev
+    modules:
+      - name: omar-wcs
+        path: omar-wcs
+        description: The OMAR Web Coverage Service provides OGC capabilities for the WCS standard, serving out image chips from O2's data holdings
+
+  - git_url: https://github.com/ossimlabs/omar-web-proxy
+    branch: dev
+    modules:
+      - name: omar-web-proxy
+        path: omar-web-proxy
+        description: The OMAR Web Proxy application acts as a proxy and reverse proxy for the OMAR services
+
+  - git_url: https://github.com/ossimlabs/omar-wfs
+    branch: dev
+    modules:
+      - name: omar-wfs
+        path: omar-wfs
+        description: The OMAR Web Feature Service provides OGC capabilities for the WFS standard, serving out feature data from O2's data holdings
+
+  - git_url: https://github.com/ossimlabs/omar-wms
+    branch: dev
+    modules:
+      - name: omar-wms
+        path: omar-wms
+        description: The OMAR Web Map Service provides OGC capabilities for the WMS standard, serving out image chips from O2's raster data holdings
+
+  - git_url: https://github.com/ossimlabs/omar-wmts
+    branch: dev
+    modules:
+      - name: omar-wmts
+        path: omar-wmts
+        description: The OMAR Web Map Tile Service provides OGC capabilities for the WMTS standard, serving out image chips from O2's raster data holdings
+
+  - git_url: https://github.com/ossimlabs/rhel-minimal
+    branch: dev
+    modules:
+      - name: rhel-minimal
+        path: rhel-minimal
+        description: The Red Hat Enterprise Linux container is used as a bare bones base upon which all other containers and apps are built
+
+  - git_url: https://github.com/ossimlabs/tlv
+    branch: dev
+    modules:
+      - name: tlv
+        path: tlv
+        description: The Time Lapse Viewer is a web-based tool, dedicated to producing on-demand imagery flipbooks.
