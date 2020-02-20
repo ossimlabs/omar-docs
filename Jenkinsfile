@@ -4,7 +4,7 @@ properties([
   parameters([
     string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag used when publishing'),
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-2', description: 'Docker image name used when publishing'),
-    string(name: 'DOCKER_REGISTRY', defaultValue: 'https://nexus.ossim.io/repository/docker-public-hosted/', description: 'The repository to find the necessary doc builder image. Also the place to publish the restultant docs-service image.'),
+    string(name: 'DOCKER_REGISTRY', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'The repository to find the necessary doc builder image. Also the place to publish the restultant docs-service image.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
