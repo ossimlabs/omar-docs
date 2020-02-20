@@ -27,8 +27,8 @@ podTemplate(
       ttyEnabled: true,
     ),
     containerTemplate(
-        name: 'ktis-doc-builder',
-        image: "${DOCKER_REGISTRY}/ktis-doc-builder:latest",
+        name: 'omar-doc-builder',
+        image: "${DOCKER_REGISTRY}/omar-doc-builder:latest",
         command: 'cat',
         ttyEnabled: true,
         envVars: [
@@ -48,11 +48,11 @@ podTemplate(
   ]
 ) {
     stage('Clone Repos') {
-        container('ktis-doc-builder') {
+        container('omar-doc-builder') {
           
           if (ADHOC_PROJECT_YAML == '') {
             checkout(scm)
-            sh 'cp ./ktis_vars.yml /mkdocs-site/local_vars.yml'
+            sh 'cp ./omar-vars.yml /mkdocs-site/local_vars.yml'
             
           } else {
             sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/local_vars.yml'
@@ -64,27 +64,15 @@ podTemplate(
             '''
         }
     }
-    
+
     stage('Build site') {
-      container('ktis-doc-builder') {
+      container('omar-doc-builder') {
       sh '''
         cd /mkdocs-site
         python3 tasks/generate.py -c local_vars.yml
         cp -r site/ /home/jenkins/agent/
         cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
       '''
-      }
-    }
-    
-    stage('Load javadocs') {
-      container('ktis-doc-builder') {
-        step ([$class: "CopyArtifact",
-                projectName: 'ktis-javadoc',
-                filter: "javadoc.tgz",
-                flatten: true])
-                
-        sh 'tar xzf javadoc.tgz'
-        sh 'cp -r javadocs/ /home/jenkins/agent/site/javadocs/'
       }
     }
 
