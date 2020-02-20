@@ -27,13 +27,13 @@ podTemplate(
       ttyEnabled: true,
     ),
     containerTemplate(
-        name: 'omar-doc-builder',
-        image: "${DOCKER_REGISTRY}/omar-doc-builder:latest",
-        command: 'cat',
-        ttyEnabled: true,
-        envVars: [
-          envVar(key: 'HOME', value: '/root')
-        ]
+      name: 'omar-doc-builder',
+      image: "${DOCKER_REGISTRY}/omar-doc-builder:latest",
+      command: 'cat',
+      ttyEnabled: true,
+      envVars: [
+        envVar(key: 'HOME', value: '/root')
+      ]
     )
   ],
   volumes: [
@@ -47,44 +47,40 @@ podTemplate(
     )
   ]
 ) {
-    stage('Clone Repos') {
-        container('omar-doc-builder') {
-          
-          if (ADHOC_PROJECT_YAML == '') {
-            checkout(scm)
-            sh 'cp ./omar-vars.yml /mkdocs-site/local_vars.yml'
-            
-          } else {
-            sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/local_vars.yml'
-          }
-          
-          sh '''
-            cd /mkdocs-site
-            python3 tasks/clone_repos.py -c local_vars.yml
-            '''
-        }
-    }
-
-    stage('Build site') {
-      container('omar-doc-builder') {
+  stage('Clone Repos') {
+    container('omar-doc-builder') {
+      if (ADHOC_PROJECT_YAML == '') {
+        checkout(scm)
+        sh 'cp ./omar-vars.yml /mkdocs-site/local_vars.yml' 
+      } else {
+        sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/local_vars.yml'
+      }
       sh '''
         cd /mkdocs-site
-        python3 tasks/generate.py -c local_vars.yml
-        cp -r site/ /home/jenkins/agent/
-        cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
-      '''
-      }
+        python3 tasks/clone_repos.py -c local_vars.yml
+        '''
     }
+  }
 
-    stage('Build Service') {
-      container('docker') {
-        withDockerRegistry(credentialsId: 'nexus-credentials', url: "https://${DOCKER_REGISTRY}") {
-          sh '''
-            cd /home/jenkins/agent
-            docker build . -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-          '''
-        }
+  stage('Build site') {
+    container('omar-doc-builder') {
+    sh '''
+      cd /mkdocs-site
+      python3 tasks/generate.py -c local_vars.yml
+      cp -r site/ /home/jenkins/agent/
+      cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
+    '''
+    }
+  }
+
+  stage('Build Service') {
+    container('docker') {
+      withDockerRegistry(credentialsId: 'nexus-credentials', url: "https://${DOCKER_REGISTRY}") {
+        sh '''
+          cd /home/jenkins/agent
+          docker build . -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+          docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+        '''
       }
     }
   }
