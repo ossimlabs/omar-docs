@@ -35,16 +35,6 @@ podTemplate(
         envVar(key: 'HOME', value: '/root')
       ]
     )
-  ],
-  volumes: [
-    secretVolume(
-      mountPath: '/secrets',
-      secretName: 'ca-cert'
-    ),
-    hostPathVolume(
-      hostPath: '/var/run/docker.sock',
-      mountPath: '/var/run/docker.sock'
-    )
   ]
 ) {
   node(POD_LABEL) {
