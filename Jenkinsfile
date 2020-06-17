@@ -2,6 +2,7 @@ properties([
   buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '20')),
   disableConcurrentBuilds(),
   parameters([
+    booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag used when publishing'),
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-2', description: 'Docker image name used when publishing'),
     string(name: 'DOCKER_REGISTRY_PULL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
