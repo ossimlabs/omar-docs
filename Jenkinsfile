@@ -102,7 +102,7 @@ podTemplate(
     }
 
     stage('Upload chart'){
-      container('builder') {
+      container('docs-site-builder') {
         withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
           sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
         }
