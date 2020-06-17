@@ -4,7 +4,9 @@ properties([
   parameters([
     string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag used when publishing'),
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-2', description: 'Docker image name used when publishing'),
-    string(name: 'DOCKER_REGISTRY', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'The repository to find the necessary doc builder image. Also the place to publish the restultant docs-service image.'),
+    string(name: 'DOCKER_REGISTRY_PULL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
+    string(name: 'DOCKER_REGISTRY_PUSH', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'Docker registry push url.'),
+    string(name: 'HELM_UPLOAD_URL', defaultValue: 'nexus.ossim.io/repository/helm-private-hosted/', description: 'Helm repo url')
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
@@ -20,7 +22,7 @@ podTemplate(
     ),
     containerTemplate(
         name: 'docs-site-builder',
-        image: "${DOCKER_REGISTRY}/docs-site-builder:latest",
+        image: "${DOCKER_REGISTRY_PULL}/docs-site-builder:latest",
         command: 'cat',
         ttyEnabled: true,
         envVars: [
@@ -65,9 +67,9 @@ podTemplate(
 
       stage('Docker build') {
         container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
             sh """
-              docker build . -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+              docker build . -t ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
             """
            }
          }
@@ -75,9 +77,9 @@ podTemplate(
 
       stage('Docker push'){
         container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
             sh """
-              docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+              docker push ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
             """
           }
         }
