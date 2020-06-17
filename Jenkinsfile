@@ -69,6 +69,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
           sh """
+            cd /home/jenkins/agent/
             docker build . -t ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
           """
          }
