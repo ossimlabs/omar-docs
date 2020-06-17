@@ -4,7 +4,7 @@ properties([
   parameters([
     string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag used when publishing'),
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-2', description: 'Docker image name used when publishing'),
-    string(name: 'DOCKER_REGISTRY', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'The repository to find the necessary doc builder image. Also the place to publish the restultant docs-service image.'),
+    string(name: 'DOCKER_REGISTRY', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'The repository to find the necessary doc builder image. Also the place to publish the restultant docs-service image.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
@@ -27,38 +27,49 @@ podTemplate(
       ttyEnabled: true,
     ),
     containerTemplate(
-      name: 'omar-doc-builder',
-      image: "${DOCKER_REGISTRY}/omar-doc-builder:latest",
-      command: 'cat',
-      ttyEnabled: true,
-      envVars: [
-        envVar(key: 'HOME', value: '/root')
-      ]
+        name: 'docs-site-builder',
+        image: "${DOCKER_REGISTRY}/docs-site-builder:latest",
+        command: 'cat',
+        ttyEnabled: true,
+        envVars: [
+          envVar(key: 'HOME', value: '/root')
+        ]
+    )
+  ],
+  volumes: [
+    secretVolume(
+      mountPath: '/secrets',
+      secretName: 'ca-cert'
+    ),
+    hostPathVolume(
+      hostPath: '/var/run/docker.sock',
+      mountPath: '/var/run/docker.sock'
     )
   ]
 ) {
   node(POD_LABEL) {
     stage('Clone Repos') {
-      container('omar-doc-builder') {
-        if (ADHOC_PROJECT_YAML == '') {
-          checkout(scm)
-          sh 'cp ./omar-vars.yml /mkdocs-site/local_vars.yml' 
-        } else {
-          sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/local_vars.yml'
-        }
-        sh '''
-          cd /mkdocs-site
-          python3 tasks/clone_repos.py -c local_vars.yml
+        container('docs-site-builder') {
+          if (ADHOC_PROJECT_YAML == '') {
+            checkout(scm)
+            sh 'cp ./omar_vars.yml /mkdocs-site/project_vars.yml'
+
+          } else {
+            sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/project_vars.yml'
+          }
+          sh '''
+            cd /mkdocs-site
+            python3 tasks/clone_repos.py -c project_vars.yml
           '''
-      }
+        }
     }
 
     stage('Build site') {
-      container('omar-doc-builder') {
+      container('docs-site-builder') {
       sh '''
         cd /mkdocs-site
         python3 tasks/generate.py -c local_vars.yml
-        cp -r site/ /home/jenkins/agent/
+        cp -r site/ /home/jenkins/agent/site/
         cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
       '''
       }
