@@ -21,13 +21,19 @@ podTemplate(
       privileged: true
     ),
     containerTemplate(
-        name: 'docs-site-builder',
-        image: "${DOCKER_REGISTRY_PULL}/docs-site-builder:latest",
-        command: 'cat',
-        ttyEnabled: true,
-        envVars: [
-          envVar(key: 'HOME', value: '/root')
-        ]
+      name: 'docs-site-builder',
+      image: "${DOCKER_REGISTRY_PULL}/docs-site-builder:latest",
+      command: 'cat',
+      ttyEnabled: true,
+      envVars: [
+        envVar(key: 'HOME', value: '/root')
+      ]
+    ),
+    containerTemplate(
+      image: "${DOCKER_REGISTRY_PULL}/alpine/helm:3.2.3",
+      name: 'helm',
+      command: 'cat',
+      ttyEnabled: true
     )
   ],
   volumes: [
