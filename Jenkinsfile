@@ -56,7 +56,7 @@ podTemplate(
       container('docs-site-builder') {
       sh '''
         cd /docs-site-builder
-        python3 tasks/generate.py -c local_vars.yml
+        python3 tasks/generate.py -c project_vars.yml
         cp -r site/ /home/jenkins/agent/site/
         cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
       '''
