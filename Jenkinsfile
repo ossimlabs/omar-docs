@@ -40,13 +40,13 @@ podTemplate(
         container('docs-site-builder') {
           if (ADHOC_PROJECT_YAML == '') {
             checkout(scm)
-            sh 'cp omar-vars.yml /mkdocs-site/project_vars.yml'
+            sh 'cp ./project_vars.yml /docs-site-builder/project_vars.yml'
 
           } else {
-            sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/project_vars.yml'
+            sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/project_vars.yml'
           }
           sh '''
-            cd /mkdocs-site
+            cd /docs-site-builder
             python3 tasks/clone_repos.py -c project_vars.yml
           '''
         }
