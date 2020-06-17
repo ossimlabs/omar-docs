@@ -40,7 +40,7 @@ podTemplate(
         container('docs-site-builder') {
           if (ADHOC_PROJECT_YAML == '') {
             checkout(scm)
-            sh 'cp ./project_vars.yml /docs-site-builder/project_vars.yml'
+            sh 'cp ./omar-vars.yml /docs-site-builder/project_vars.yml'
 
           } else {
             sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/project_vars.yml'
