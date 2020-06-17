@@ -41,7 +41,7 @@ podTemplate(
           if (ADHOC_PROJECT_YAML == '') {
             checkout(scm)
             sh 'ls'
-            sh 'cp ./omar_vars.yml /mkdocs-site/project_vars.yml'
+            sh 'cp omar_vars.yml /mkdocs-site/project_vars.yml'
 
           } else {
             sh 'echo "${ADHOC_PROJECT_YAML}" > /mkdocs-site/project_vars.yml'
