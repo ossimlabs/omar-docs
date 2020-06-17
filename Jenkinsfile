@@ -6,7 +6,7 @@ properties([
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-2', description: 'Docker image name used when publishing'),
     string(name: 'DOCKER_REGISTRY_PULL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
     string(name: 'DOCKER_REGISTRY_PUSH', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'Docker registry push url.'),
-    string(name: 'HELM_UPLOAD_URL', defaultValue: 'nexus.ossim.io/repository/helm-private-hosted/', description: 'Helm repo url')
+    string(name: 'HELM_UPLOAD_URL', defaultValue: 'nexus.ossim.io/repository/helm-private-hosted/', description: 'Helm repo url'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
