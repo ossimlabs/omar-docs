@@ -37,74 +37,73 @@ podTemplate(
     )
   ]
 ) {
-  node(POD_LABEL) {
-    stage('Clone Repos') {
-        container('docs-site-builder') {
-          if (ADHOC_PROJECT_YAML == '') {
-            checkout(scm)
-            sh 'cp ./omar-vars.yml /docs-site-builder/project_vars.yml'
+node(POD_LABEL) {
+  stage('Clone Repos') {
+    container('docs-site-builder') {
+      if (ADHOC_PROJECT_YAML == '') {
+        checkout(scm)
+          sh 'cp ./omar-vars.yml /docs-site-builder/project_vars.yml'
 
-          } else {
-            sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/project_vars.yml'
-          }
-          sh '''
-            cd /docs-site-builder
-            python3 tasks/clone_repos.py -c project_vars.yml
-          '''
+        } else {
+          sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/project_vars.yml'
         }
+        sh '''
+          cd /docs-site-builder
+          python3 tasks/clone_repos.py -c project_vars.yml
+        '''
     }
+  }
 
-    stage('Build site') {
-      container('docs-site-builder') {
-      sh '''
-        cd /docs-site-builder
-        python3 tasks/generate.py -c project_vars.yml
-        cp -r site/ /home/jenkins/agent/site/
-        cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
-      '''
+  stage('Build site') {
+    container('docs-site-builder') {
+    sh '''
+      cd /docs-site-builder
+      python3 tasks/generate.py -c project_vars.yml
+      cp -r site/ /home/jenkins/agent/site/
+      cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
+    '''
+    }
+  }
+
+  stage('Docker build') {
+    container('docker') {
+      withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
+        sh """
+          docker build . -t ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
+        """
+       }
+     }
+   }
+
+  stage('Docker push'){
+    container('docker') {
+      withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
+        sh """
+          docker push ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
+        """
       }
     }
+  }
 
-      stage('Docker build') {
-        container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
-            sh """
-              docker build . -t ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
-            """
-           }
-         }
-       }
-
-      stage('Docker push'){
-        container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
-            sh """
-              docker push ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
-            """
-          }
-        }
-      }
-
-       stage('Package chart'){
-         container('helm') {
-           sh """
-               mkdir packaged-chart
-               helm package -d packaged-chart chart
-             """
-         }
-       }
-       stage('Upload chart'){
-         container('builder') {
-           withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
-             sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
-           }
-         }
-       }
-
-       stage("Clean Workspace"){
-         if ("${CLEAN_WORKSPACE}" == "true")
-           step([$class: 'WsCleanup'])
-       }
+  stage('Package chart'){
+    container('helm') {
+      sh """
+        mkdir packaged-chart
+        helm package -d packaged-chart chart
+      """
     }
+  }
+
+  stage('Upload chart'){
+    container('builder') {
+      withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
+        sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
+      }
+    }
+  }
+
+  stage("Clean Workspace"){
+    if ("${CLEAN_WORKSPACE}" == "true")
+      step([$class: 'WsCleanup'])
   }
 }
