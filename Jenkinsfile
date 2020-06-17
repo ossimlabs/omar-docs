@@ -19,14 +19,6 @@ podTemplate(
       privileged: true
     ),
     containerTemplate(
-      envVars: [
-        envVar(key: 'JENKINS_CERT_FILE', value: '/secrets/cert.pem')
-      ],
-      image: "${DOCKER_REGISTRY}/jnlp-agent:latest",
-      name: 'jnlp', // using Jenkins agent image
-      ttyEnabled: true,
-    ),
-    containerTemplate(
         name: 'docs-site-builder',
         image: "${DOCKER_REGISTRY}/docs-site-builder:latest",
         command: 'cat',
