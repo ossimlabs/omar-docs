@@ -63,16 +63,46 @@ podTemplate(
       }
     }
 
-    stage('Build Service') {
-      container('docker') {
-        withDockerRegistry(credentialsId: 'nexus-credentials', url: "https://${DOCKER_REGISTRY}") {
-          sh '''
-            cd /home/jenkins/agent
-            docker build . -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-          '''
+      stage('Docker build') {
+        container('docker') {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {
+            sh """
+              docker build . -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+            """
+           }
+         }
+       }
+
+      stage('Docker push'){
+        container('docker') {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
+            sh """
+              docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+            """
+          }
         }
       }
+
+       stage('Package chart'){
+         container('helm') {
+           sh """
+               mkdir packaged-chart
+               helm package -d packaged-chart chart
+             """
+         }
+       }
+       stage('Upload chart'){
+         container('builder') {
+           withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
+             sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
+           }
+         }
+       }
+
+       stage("Clean Workspace"){
+         if ("${CLEAN_WORKSPACE}" == "true")
+           step([$class: 'WsCleanup'])
+       }
     }
   }
 }
