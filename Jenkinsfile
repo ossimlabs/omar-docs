@@ -88,7 +88,7 @@ podTemplate(
       container('docker') {
         sh """
           cd /home/jenkins/agent/
-          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${BRANCH_NAME}
+          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
         """
       }
     }
@@ -97,7 +97,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
           sh """
-            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${BRANCH_NAME}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
           """
         }
       }
