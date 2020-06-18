@@ -5,9 +5,7 @@ properties([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'IMAGE_TAG', defaultValue: '2.12.0', description: 'Docker image tag used when publishing'),
     string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-app', description: 'Docker image name used when publishing'),
-    string(name: 'DOCKER_REGISTRY_PULL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
-    string(name: 'DOCKER_REGISTRY_PUSH', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'Docker registry push url.'),
-    string(name: 'HELM_UPLOAD_URL', defaultValue: 'nexus.ossim.io/repository/helm-private-hosted/', description: 'Helm repo url'),
+    string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
@@ -23,7 +21,7 @@ podTemplate(
     ),
     containerTemplate(
       name: 'docs-site-builder',
-      image: "${DOCKER_REGISTRY_PULL}/docs-site-builder:latest",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/docs-site-builder:latest",
       command: 'cat',
       ttyEnabled: true,
       envVars: [
@@ -31,7 +29,7 @@ podTemplate(
       ]
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_PULL}/alpine/helm:3.2.3",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
       name: 'helm',
       command: 'cat',
       ttyEnabled: true
@@ -45,10 +43,26 @@ podTemplate(
   ]
 ) {
   node(POD_LABEL) {
+
+    stage("Checkout branch $BRANCH_NAME")
+    {
+      checkout(scm)
+    }
+
+    stage("Load Variables")
+    {
+      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
+        step ([$class: "CopyArtifact",
+          projectName: o2ArtifactProject,
+          filter: "common-variables.groovy",
+          flatten: true])
+      }
+      load "common-variables.groovy"
+    }
+
     stage('Clone Repos') {
       container('docs-site-builder') {
         if (ADHOC_PROJECT_YAML == '') {
-          checkout(scm)
             sh 'cp ./omar-vars.yml /docs-site-builder/project_vars.yml'
 
           } else {
@@ -74,20 +88,18 @@ podTemplate(
 
     stage('Docker build') {
       container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
-          sh """
-            cd /home/jenkins/agent/
-            docker build . -t ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
-          """
-         }
-       }
-     }
+        sh """
+          cd /home/jenkins/agent/
+          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+        """
+      }
+    }
 
     stage('Docker push'){
       container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUSH}") {
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
           sh """
-            docker push ${DOCKER_REGISTRY_PUSH}/${IMAGE_NAME}:${IMAGE_TAG}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${IMAGE_NAME}:${IMAGE_TAG}
           """
         }
       }
