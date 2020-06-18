@@ -44,7 +44,7 @@ repos:
         path: omar-base
         description: The OMAR base container is the docker image upon which all other O2 services are built.
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-base/api"
+          swagger: "http://omar-dev.ossim.io/omar-base/api"
 
   - git_url: https://github.com/ossimlabs/omar-basemap
     branch: dev
@@ -53,7 +53,7 @@ repos:
         path: omar-basemap
         description: The OMAR Basemap service provides Open Street Map tiles to the web application and the user.
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-basemap/api"
+          swagger: "http://omar-dev.ossim.io/omar-basemap/api"
 
   - git_url: https://github.com/ossimlabs/omar-config-server
     branch: dev
@@ -62,7 +62,7 @@ repos:
         path: omar-config-server
         description: The OMAR Spring Configuration Server is used to hand configuration files out to the various OMAR Spring micro services.
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-config-server/api"
+          swagger: "http://omar-dev.ossim.io/omar-config-server/api"
 
   - git_url: https://github.com/ossimlabs/omar-download
     branch: dev
@@ -71,7 +71,7 @@ repos:
         path: omar-download
         description: The OMAR Download service handles user download requests for imagery, bundling an image's raw file with all auxillary files into a zip file.
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-download/api"
+          swagger: "http://omar-dev.ossim.io/omar-download/api"
 
   - git_url: https://github.com/ossimlabs/omar-eureka-server
     branch: dev
@@ -88,7 +88,7 @@ repos:
         path: omar-geoscript
         description: The OMAR Geoscript application encapsulates all the geotools dependencies which provides libraries to query the OMAR database, draw footprints and manipulate shape files among other spatial capabilities
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-geoscript/api"
+          swagger: "http://omar-dev.ossim.io/omar-geoscript/api"
 
   - git_url: https://github.com/ossimlabs/omar-mapproxy
     branch: dev
@@ -97,7 +97,7 @@ repos:
         path: omar-mapproxy
         description: The OMAR MapProxy service acts as a proxy between basemaps and geospatial applications as well as a map tile cache
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-mapproxy/api"
+          swagger: "http://omar-dev.ossim.io/omar-mapproxy/api"
 
   - git_url: https://github.com/ossimlabs/omar-mensa
     branch: dev
@@ -106,7 +106,7 @@ repos:
         path: omar-mensa
         description: Tme OMAR Mensuration service receives and handles all user measurement (e.g. area, length, etc.) requests for a particular image
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-mensa/api"
+          swagger: "http://omar-dev.ossim.io/omar-mensa/api"
 
   - git_url: https://github.com/ossimlabs/omar-nifi
     branch: dev
@@ -114,7 +114,7 @@ repos:
       - name: omar-nifi
         path: omar-nifi
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-nifi/api"
+          swagger: "http://omar-dev.ossim.io/omar-nifi/api"
 
   - git_url: https://github.com/ossimlabs/omar-oms
     branch: dev
@@ -123,7 +123,7 @@ repos:
         path: omar-oms
         description: The OMAR OSSIM Mapping Service contains all of OSSIM's functionality, binding it via JNI to be web accessible
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-oms/api"
+          swagger: "http://omar-dev.ossim.io/omar-oms/api"
 
   - git_url: https://github.com/ossimlabs/omar-ossim-base
     branch: dev
@@ -132,7 +132,7 @@ repos:
         path: omar-ossim-base
         description: The OMAR OSSIM Base container is a docker image that containes all OSSIM libraries and is used to build any other service that may require them
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-ossim-base/api"
+          swagger: "http://omar-dev.ossim.io/omar-ossim-base/api"
 
   - git_url: https://github.com/ossimlabs/omar-reachback
     branch: dev
@@ -141,7 +141,7 @@ repos:
         path: omar-reachback
         description: OMAR-reachback allows for search and discovery of data in external repositories
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-reachback/api"
+          swagger: "http://omar-dev.ossim.io/omar-reachback/api"
 
   - git_url: https://github.com/ossimlabs/omar-services-monitor
     branch: dev
@@ -158,7 +158,7 @@ repos:
         path: omar-sqs-stager
         description: The OMAR Simple Queue Service Stager provides the workflow to monitors, receive and process (i.e. ingest) SQS messages which notify the system of new images to be ingested
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-sqs-stager/api"
+          swagger: "http://omar-dev.ossim.io/omar-sqs-stager/api"
 
   - git_url: https://github.com/ossimlabs/omar-stager
     branch: dev
@@ -167,7 +167,7 @@ repos:
         path: omar-stager
         description: The OMAR Stager service provides the workflow to process and ingest data into the O2 system, creating histograms and overviews as necessary
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-stager/api"
+          swagger: "http://omar-dev.ossim.io/omar-stager/api"
 
   - git_url: https://github.com/ossimlabs/omar-superoverlay
     branch: dev
@@ -176,7 +176,7 @@ repos:
         path: omar-superoverlay
         description: The OMAR Superoverlay service provides functionality for generating and servicing KMLs, which allows users to search and view imagery within O2 in external GeoINT tools
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-superoverlay/api"
+          swagger: "http://omar-dev.ossim.io/omar-superoverlay/api"
 
   - git_url: https://github.com/ossimlabs/omar-twofishes
     branch: dev
@@ -185,7 +185,7 @@ repos:
         path: omar-twofishes
         description: The OMAR Twofishes service acts as a geocoder through converting g-oname strings into coordinates
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-twofishes/api"
+          swagger: "http://omar-dev.ossim.io/omar-twofishes/api"
 
   - git_url: https://github.com/ossimlabs/omar-ui
     branch: dev
@@ -194,7 +194,7 @@ repos:
         path: omar-ui
         description: The OMAR UI services provides the user an entry point to conveniently interact with OMAR and its supported services
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-ui/api"
+          swagger: "http://omar-dev.ossim.io/omar-ui/api"
 
   - git_url: https://github.com/ossimlabs/omar-upload
     branch: dev
@@ -203,7 +203,7 @@ repos:
         path: omar-upload
         description: The OMAR Upload service allows users to upload image files for stagin
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-upload/api"
+          swagger: "http://omar-dev.ossim.io/omar-upload/api"
 
   - git_url: https://github.com/ossimlabs/omar-video-ui
     branch: dev
@@ -212,7 +212,7 @@ repos:
         path: omar-video-ui
         description: OMAR-video-ui is the UI that enables users to exploit video data
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-video-ui/api"
+          swagger: "http://omar-dev.ossim.io/omar-video-ui/api"
 
   - git_url: https://github.com/ossimlabs/omar-volume-cleanup
     branch: dev
@@ -221,7 +221,7 @@ repos:
         path: omar-volume-cleanup
         description: An application to monitor and manage a volume of O2 raster images. The application cleans old rasters when used disk space goes over a given threshold. Rasters are deleted using the omar-stager HTTP API
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-volume-cleanup/api"
+          swagger: "http://omar-dev.ossim.io/omar-volume-cleanup/api"
 
   - git_url: https://github.com/ossimlabs/omar-wcs
     branch: dev
@@ -230,7 +230,7 @@ repos:
         path: omar-wcs
         description: The OMAR Web Coverage Service provides OGC capabilities for the WCS standard, serving out image chips from O2's data holdings
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-wcs/api"
+          swagger: "http://omar-dev.ossim.io/omar-wcs/api"
 
   - git_url: https://github.com/ossimlabs/omar-web-proxy
     branch: dev
@@ -239,7 +239,7 @@ repos:
         path: omar-web-proxy
         description: The OMAR Web Proxy application acts as a proxy and reverse proxy for the OMAR services
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-web-proxy/api"
+          swagger: "http://omar-dev.ossim.io/omar-web-proxy/api"
 
   - git_url: https://github.com/ossimlabs/omar-wfs
     branch: dev
@@ -248,7 +248,7 @@ repos:
         path: omar-wfs
         description: The OMAR Web Feature Service provides OGC capabilities for the WFS standard, serving out feature data from O2's data holdings
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-wfs/api"
+          swagger: "http://omar-dev.ossim.io/omar-wfs/api"
 
   - git_url: https://github.com/ossimlabs/omar-wms
     branch: dev
@@ -257,7 +257,7 @@ repos:
         path: omar-wms
         description: The OMAR Web Map Service provides OGC capabilities for the WMS standard, serving out image chips from O2's raster data holdings
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-wms/api"
+          swagger: "http://omar-dev.ossim.io/omar-wms/api"
 
   - git_url: https://github.com/ossimlabs/omar-wmts
     branch: dev
@@ -266,7 +266,7 @@ repos:
         path: omar-wmts
         description: The OMAR Web Map Tile Service provides OGC capabilities for the WMTS standard, serving out image chips from O2's raster data holdings
         links:
-          - swagger: "http://omar-dev.ossim.io/omar-wmts/api"
+          swagger: "http://omar-dev.ossim.io/omar-wmts/api"
 
   - git_url: https://github.com/ossimlabs/rhel-minimal
     branch: dev
@@ -283,4 +283,4 @@ repos:
         path: tlv
         description: The Time Lapse Viewer is a web-based tool, dedicated to producing on-demand imagery flipbooks.
         links:
-          - swagger: "http://omar-dev.ossim.io/tlv/api"
+          swagger: "http://omar-dev.ossim.io/tlv/api"
