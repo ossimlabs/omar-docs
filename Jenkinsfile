@@ -3,8 +3,6 @@ properties([
   disableConcurrentBuilds(),
   parameters([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
-    string(name: 'IMAGE_TAG', defaultValue: '2.12.0', description: 'Docker image tag used when publishing'),
-    string(name: 'IMAGE_NAME', defaultValue: 'omar-docs-app', description: 'Docker image name used when publishing'),
     string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
@@ -90,7 +88,7 @@ podTemplate(
       container('docker') {
         sh """
           cd /home/jenkins/agent/
-          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${BRANCH_NAME}
         """
       }
     }
@@ -99,7 +97,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
           sh """
-            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${BRANCH_NAME}
           """
         }
       }
