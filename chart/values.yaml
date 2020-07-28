@@ -42,7 +42,7 @@ image:
   tag: dev
   pullPolicy: Always
   
-ingressPath: /omar-docs/(.*)
+ingressPath: /omar-docs/?(.*)
 ingressRewriteTarget: /$1
 internalPort: 80
 externalPort: 80
