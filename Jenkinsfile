@@ -19,7 +19,7 @@ podTemplate(
     ),
     containerTemplate(
       name: 'docs-site-builder',
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/docs-site-builder:1.0.1",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/docs-site-builder:1.0.3",
       command: 'cat',
       ttyEnabled: true,
       envVars: [
