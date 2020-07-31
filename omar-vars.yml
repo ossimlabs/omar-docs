@@ -17,6 +17,7 @@ docs_locations:
   - docker/Dockerfile
   - Jenkinsfile
   - docs/
+  - docs/install-guide
 
 # The hierarchy of documentation, some number of repos each containing some number of modules.
 repos:
