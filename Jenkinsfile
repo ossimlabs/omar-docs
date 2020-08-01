@@ -4,6 +4,7 @@ properties([
   parameters([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
+    string(name: 'BUILDER_VERSION', defaultValue: '1.0.4', description: 'Version of the docs-site-builder image to use.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
@@ -19,7 +20,7 @@ podTemplate(
     ),
     containerTemplate(
       name: 'docs-site-builder',
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/docs-site-builder:1.0.4",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/docs-site-builder:${BUILDER_VERSION}",
       command: 'cat',
       ttyEnabled: true,
       envVars: [
