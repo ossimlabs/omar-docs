@@ -62,14 +62,14 @@ podTemplate(
     stage('Clone Repos') {
       container('docs-site-builder') {
         if (ADHOC_PROJECT_YAML == '') {
-            sh 'cp ./omar-vars.yml /docs-site-builder/project_vars.yml'
+            sh 'cp ./omar-vars.yml /docs-site-builder/omar-vars.yml'
 
           } else {
-            sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/project_vars.yml'
+            sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/omar-vars.yml'
           }
           sh '''
             cd /docs-site-builder
-            python3 src/tasks/clone_repos.py -c project_vars.yml
+            python3 src/tasks/clone_repos.py -c omar-vars.yml
           '''
       }
     }
@@ -78,7 +78,7 @@ podTemplate(
       container('docs-site-builder') {
       sh '''
         cd /docs-site-builder
-        python3 src/tasks/generate.py -c project_vars.yml
+        python3 src/tasks/generate.py -c omar-vars.yml
         cp -r site/ /home/jenkins/agent/site/
         cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
       '''
