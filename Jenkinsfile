@@ -79,8 +79,7 @@ podTemplate(
       sh '''
         cd /docs-site-builder
         python3 src/tasks/generate.py -c omar-vars.yml
-        cp -r site/ /home/jenkins/agent/site/
-        cp docker/docs-service/Dockerfile /home/jenkins/agent/Dockerfile
+        cp -r site/ docker/docs-service/
       '''
       }
     }
@@ -88,7 +87,7 @@ podTemplate(
     stage('Docker build') {
       container('docker') {
         sh """
-          cd /home/jenkins/agent/
+          /docs-site-builder/docker/docs-service/
           docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
         """
       }
