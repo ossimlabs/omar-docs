@@ -48,10 +48,12 @@ podTemplate(
       checkout(scm)
     }
 
-    stage("Copy files") {
-      sh """
+    container('docs-site-builder') {
+      stage("Copy files") {
+        sh """
         cp -r /docs-site-builder/src .
       """
+      }
     }
 
 //    stage("Load Variables")
