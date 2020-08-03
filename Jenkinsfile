@@ -4,7 +4,6 @@ properties([
   parameters([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
-    string(name: 'DOCKER_REGISTRY_PUSH', defaultValue: 'nexus-docker-private-hosted.ossim.io', description: 'Docker registry push url.'),
     string(name: 'BUILDER_VERSION', defaultValue: '1.0.4', description: 'Version of the docs-site-builder image to use.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
@@ -57,16 +56,16 @@ podTemplate(
       }
     }
 
-    //    stage("Load Variables")
-    //    {
-    //      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
-    //        step ([$class: "CopyArtifact",
-    //          projectName: o2ArtifactProject,
-    //          filter: "common-variables.groovy",
-    //          flatten: true])
-    //      }
-    //      load "common-variables.groovy"
-    //    }
+    stage("Load Variables")
+    {
+      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
+        step ([$class: "CopyArtifact",
+          projectName: o2ArtifactProject,
+          filter: "common-variables.groovy",
+          flatten: true])
+      }
+      load "common-variables.groovy"
+    }
 
     stage('Clone Repos') {
       container('docs-site-builder') {
@@ -99,7 +98,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
           sh """
-            docker push ${DOCKER_REGISTRY_PUSH}/omar-docs-app:${BRANCH_NAME}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
           """
         }
       }
