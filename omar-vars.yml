@@ -18,6 +18,7 @@ docs_locations:
   - Jenkinsfile
   - docs/
   - docs/install-guide
+  - docs/user-guide/
 
 # The hierarchy of documentation, some number of repos each containing some number of modules.
 repos:
