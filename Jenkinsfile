@@ -4,7 +4,8 @@ properties([
   parameters([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
-    string(name: 'BUILDER_VERSION', defaultValue: '1.0.4', description: 'Version of the docs-site-builder image to use.'),
+    string(name: 'BUILDER_VERSION', defaultValue: '2.1.2', description: 'Version of the docs-site-builder image to use.'),
+    string(name: 'VERSION', defaultValue: '', description: 'The version tag with which to build the docker image. Defaults to branch name, except on master.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
 ])
@@ -88,8 +89,19 @@ podTemplate(
 
     stage('Docker build') {
       container('docker') {
+        if (BRANCH_NAME == "master") {
+          if (VERSION == '') {
+            print "Please specify a version when building on master."
+            exit 1
+          } else {
+            TAG = VERSION
+          }
+        } else {
+          TAG = BRANCH_NAME
+        }
+
         sh """
-          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
+          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
         """
       }
     }
@@ -98,7 +110,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
           sh """
-            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
           """
         }
       }
