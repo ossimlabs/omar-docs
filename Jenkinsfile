@@ -48,38 +48,38 @@ podTemplate(
       checkout(scm)
     }
 
-    stage("Load Variables")
-    {
-      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
-        step ([$class: "CopyArtifact",
-          projectName: o2ArtifactProject,
-          filter: "common-variables.groovy",
-          flatten: true])
-      }
-      load "common-variables.groovy"
+    stage("Copy files") {
+      sh """
+        cp -r /docs-site-builder/src .
+      """
     }
+
+//    stage("Load Variables")
+//    {
+//      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
+//        step ([$class: "CopyArtifact",
+//          projectName: o2ArtifactProject,
+//          filter: "common-variables.groovy",
+//          flatten: true])
+//      }
+//      load "common-variables.groovy"
+//    }
 
     stage('Clone Repos') {
       container('docs-site-builder') {
-        if (ADHOC_PROJECT_YAML == '') {
-            sh 'cp ./omar-vars.yml /docs-site-builder/omar-vars.yml'
-
-          } else {
-            sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/omar-vars.yml'
-          }
-          sh '''
-            cd /docs-site-builder
-            python3 src/tasks/clone_repos.py -c omar-vars.yml
-          '''
+        if (ADHOC_PROJECT_YAML != '') {
+          sh 'echo "${ADHOC_PROJECT_YAML}" > /docs-site-builder/omar-vars.yml'
+        }
+        sh """
+          python3 src/tasks/clone_repos.py -c omar-vars.yml
+        """
       }
     }
 
     stage('Build site') {
       container('docs-site-builder') {
       sh '''
-        cd /docs-site-builder
         python3 src/tasks/generate.py -c omar-vars.yml
-        cp -r site/ docker/docs-service/
       '''
       }
     }
@@ -87,7 +87,6 @@ podTemplate(
     stage('Docker build') {
       container('docker') {
         sh """
-          /docs-site-builder/docker/docs-service/
           docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${BRANCH_NAME}
         """
       }
