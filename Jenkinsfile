@@ -4,7 +4,7 @@ properties([
   parameters([
     booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
     string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Docker registry pull url.'),
-    string(name: 'BUILDER_VERSION', defaultValue: '2.2.0', description: 'Version of the docs-site-builder image to use.'),
+    string(name: 'BUILDER_VERSION', defaultValue: '2.2.1', description: 'Version of the docs-site-builder image to use.'),
     string(name: 'VERSION', defaultValue: '', description: 'The version tag with which to build the docker image. Defaults to branch name, except on master.'),
     text(name: 'ADHOC_PROJECT_YAML', defaultValue: '', description: 'Override the project vars used to generate documentation')
   ])
