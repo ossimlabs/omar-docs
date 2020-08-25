@@ -46,14 +46,24 @@ podTemplate(
 
     stage("Checkout branch $BRANCH_NAME")
         {
+          if (BRANCH_NAME == "master") {
+            if (VERSION == '') {
+              print "Please specify a version when building on master to release a docker image."
+              skip_docker = true
+            } else {
+              TAG = VERSION
+            }
+          } else {
+            TAG = BRANCH_NAME
+          }
           checkout(scm)
         }
 
     container('docs-site-builder') {
       stage("Copy files") {
         sh """
-        cp -r /docs-site-builder/src .
-      """
+          cp -r /docs-site-builder/src .
+        """
       }
     }
 
@@ -87,31 +97,22 @@ podTemplate(
       }
     }
 
-    stage('Docker build') {
-      container('docker') {
-        if (BRANCH_NAME == "master") {
-          if (VERSION == '') {
-            print "Please specify a version when building on master."
-            exit 1
-          } else {
-            TAG = VERSION
-          }
-        } else {
-          TAG = BRANCH_NAME
-        }
-
-        sh """
+    if (!skip_docker) {
+      stage('Docker build') {
+        container('docker') {
+          sh """
           docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
         """
+        }
       }
-    }
 
-    stage('Docker push'){
-      container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
-          sh """
+      stage('Docker push'){
+        container('docker') {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
+            sh """
             docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
           """
+          }
         }
       }
     }
