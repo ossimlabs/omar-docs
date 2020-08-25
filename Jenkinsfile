@@ -46,6 +46,7 @@ podTemplate(
 
     stage("Checkout branch $BRANCH_NAME")
         {
+          TAG = ''
           if (BRANCH_NAME == "master") {
             if (VERSION == '') {
               print "Specify a version when building on master to release a docker image."
@@ -100,7 +101,7 @@ podTemplate(
       when (TAG != '') {
         container('docker') {
           sh """
-          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
+          docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${TAG}
         """
         }
       }
@@ -111,7 +112,7 @@ podTemplate(
         container('docker') {
           withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
             sh """
-            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
+            docker push ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs:${TAG}
           """
           }
         }
