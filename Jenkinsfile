@@ -48,8 +48,7 @@ podTemplate(
         {
           if (BRANCH_NAME == "master") {
             if (VERSION == '') {
-              print "Please specify a version when building on master to release a docker image."
-              skip_docker = true
+              print "Specify a version when building on master to release a docker image."
             } else {
               TAG = VERSION
             }
@@ -97,16 +96,18 @@ podTemplate(
       }
     }
 
-    if (!skip_docker) {
-      stage('Docker build') {
+    stage('Docker build') {
+      when (TAG != '') {
         container('docker') {
           sh """
           docker build . -t ${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-docs-app:${TAG}
         """
         }
       }
+    }
 
-      stage('Docker push'){
+    stage('Docker push'){
+      when (TAG != '') {
         container('docker') {
           withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
             sh """
