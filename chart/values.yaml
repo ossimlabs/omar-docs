@@ -39,7 +39,7 @@ resources:
     
 image:
   name: omar-docs-app
-  tag: 2.3.0
+  tag: 2.13.0
   pullPolicy: Always
   
 ingressPath: /omar-docs/?(.*)
