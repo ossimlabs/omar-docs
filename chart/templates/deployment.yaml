@@ -13,6 +13,12 @@ spec:
       labels:
         app: {{ .Values.appName }}
     spec:
+      {{- if .Values.extraInitContainers }}
+      {{ toYaml .Values.extraInitContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.sideCars }}
+      {{ toYaml .Values.sideCars | indent 6 }}
+      {{- end }}
       containers:
       - name:  {{ .Values.appName }}
         env:
