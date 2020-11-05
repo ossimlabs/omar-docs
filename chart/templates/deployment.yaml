@@ -14,11 +14,11 @@ spec:
         app: {{ .Values.appName }}
     spec:
       {{- if .Values.extraInitContainers }}
-      {{- toYaml .Values.extraInitContainers |  nindent 6 }}
+      {{- toYaml .Values.extraInitContainers | nindent 6 }}
       {{- end }}
       containers:
       {{- if .Values.sideCars }}
-      {{- toYaml .Values.sideCars |  nindent 6 }}
+      {{- toYaml .Values.sideCars | nindent 6 }}
       {{- end }}
       - name:  {{ .Values.appName }}
         env:
