@@ -78,6 +78,22 @@ podTemplate(
       load "common-variables.groovy"
     }
 
+    stage('SonarQube Analysis') {
+                nodejs(nodeJSInstallationName: "${NODEJS_VERSION}") {
+                    def scannerHome = tool "${SONARQUBE_SCANNER_VERSION}"
+
+                    withSonarQubeEnv('sonarqube'){
+                        sh """
+                            sonar-scanner \
+                              -Dsonar.projectKey=omar-docs \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=https://sonarqube.ossim.io \
+                              -Dsonar.login=dcef3f80b438f49b95d8f9d4b2acd8ae0af6127b
+                        """
+                    }
+                }
+            }
+
     stage('Clone Repos') {
       container('docs-site-builder') {
         if (ADHOC_PROJECT_YAML != '') {
